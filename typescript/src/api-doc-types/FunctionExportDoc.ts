@@ -18,8 +18,9 @@ export class FunctionExportDoc extends ParameterizedExportDoc {
       symbol: Symbol,
       basePath: string,
       typeChecker: TypeChecker,
-      namespacesToInclude: string[]) {
-    super(moduleDoc, symbol, findRealDeclaration(symbol.getDeclarations()!), basePath, typeChecker, namespacesToInclude);
+      namespacesToInclude: string[],
+      aliasSymbol?: Symbol) {
+    super(moduleDoc, symbol, findRealDeclaration(symbol.getDeclarations()!), basePath, typeChecker, namespacesToInclude, aliasSymbol);
   }
 
 }

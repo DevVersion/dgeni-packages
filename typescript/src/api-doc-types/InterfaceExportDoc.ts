@@ -14,8 +14,9 @@ export class InterfaceExportDoc extends ClassLikeExportDoc {
     symbol: Symbol,
     basePath: string,
     typeChecker: TypeChecker,
-    namespacesToInclude: string[]) {
-      super(moduleDoc, symbol, symbol.valueDeclaration || symbol.getDeclarations()![0]!, basePath, typeChecker, namespacesToInclude);
+    namespacesToInclude: string[],
+    aliasSymbol?: Symbol) {
+      super(moduleDoc, symbol, symbol.valueDeclaration || symbol.getDeclarations()![0]!, basePath, typeChecker, namespacesToInclude, aliasSymbol);
       if (symbol.members) this.members = this.getMemberDocs(symbol.members, true, false);
       this.additionalDeclarations = symbol.getDeclarations()!.filter(declaration => declaration !== this.declaration);
     }

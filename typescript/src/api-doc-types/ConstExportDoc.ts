@@ -7,7 +7,14 @@ export class ConstExportDoc extends ExportDoc {
   docType = 'const';
   type = getDeclarationTypeText(this.declaration, this.namespacesToInclude);
 
-  constructor(moduleDoc: ModuleDoc, symbol: Symbol, basePath: string, typeChecker: TypeChecker, namespacesToInclude: string[]) {
-    super(moduleDoc, symbol, symbol.valueDeclaration!, basePath, typeChecker, namespacesToInclude);
+  constructor(moduleDoc: ModuleDoc,
+              symbol: Symbol,
+              basePath: string,
+              typeChecker: TypeChecker,
+              namespacesToInclude: string[],
+              aliasSymbol?: Symbol) {
+
+    super(moduleDoc, symbol, symbol.valueDeclaration!, basePath, typeChecker, namespacesToInclude,
+        aliasSymbol);
   }
 }

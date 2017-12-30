@@ -92,6 +92,10 @@ export class ReadTypeScriptModules implements Processor {
         // Ignore exports that match the configured regular expressions
         if (anyMatches(this.ignoreExportsRegexes, exportSymbol.name)) return;
 
+        // If there is a resolved symbol that is not the export symbol, then the `exportSymbol`
+        // is the original symbol of the alias export.
+        const aliasSymbol = exportSymbol.resolvedSymbol ? exportSymbol : undefined;
+
         // If the symbol is an alias (e.g. re-exported from another module) then get the original resolved symbol
         const resolvedExport = exportSymbol.resolvedSymbol || exportSymbol;
 
@@ -105,32 +109,32 @@ export class ReadTypeScriptModules implements Processor {
 
         switch (getExportDocType(resolvedExport)) {
           case 'class':
-            const classDoc = new ClassExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.hidePrivateMembers, this.namespacesToInclude);
+            const classDoc = new ClassExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.hidePrivateMembers, this.namespacesToInclude, aliasSymbol);
             this.addMemberDocs(docs, classDoc.members);
             this.addMemberDocs(docs, classDoc.statics);
             if (classDoc.constructorDoc) this.addMemberDocs(docs, [classDoc.constructorDoc]);
             this.addExportDoc(docs, moduleDoc, classDoc);
             break;
           case 'interface':
-            const interfaceDoc = new InterfaceExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude);
+            const interfaceDoc = new InterfaceExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude, aliasSymbol);
             this.addMemberDocs(docs, interfaceDoc.members);
             this.addExportDoc(docs, moduleDoc, interfaceDoc);
             break;
           case 'enum':
-            const enumDoc = new EnumExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude);
+            const enumDoc = new EnumExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude, aliasSymbol);
             enumDoc.members.forEach(doc => docs.push(doc));
             this.addExportDoc(docs, moduleDoc, enumDoc);
             break;
           case 'const':
           case 'let':
           case 'var':
-            this.addExportDoc(docs, moduleDoc, new ConstExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude));
+            this.addExportDoc(docs, moduleDoc, new ConstExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude, aliasSymbol));
             break;
           case 'type-alias':
-            this.addExportDoc(docs, moduleDoc, new TypeAliasExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude));
+            this.addExportDoc(docs, moduleDoc, new TypeAliasExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude, aliasSymbol));
             break;
           case 'function':
-            const functionDoc = new FunctionExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude);
+            const functionDoc = new FunctionExportDoc(moduleDoc, resolvedExport, this.basePath, typeChecker, this.namespacesToInclude, aliasSymbol);
             this.addExportDoc(docs, moduleDoc, functionDoc);
             functionDoc.overloads.forEach(doc => docs.push(doc));
             break;

@@ -14,8 +14,8 @@ export abstract class ExportDoc implements ApiDoc {
   // Concrete implementations will provide the docType string
   abstract docType: string;
 
-  name = this.symbol.name;
-  aliases = [this.name, this.moduleDoc.id + "/" + this.name];
+  name = this.aliasSymbol ? this.aliasSymbol.name : this.symbol.name;
+  aliases = [this.symbol.name, this.moduleDoc.id + "/" + this.symbol.name];
   id = this.moduleDoc.id + "/" + this.name;
   fileInfo = new FileInfo(this.declaration, this.basePath);
   startingLine = this.fileInfo.location.start.line + (this.fileInfo.location.start.character ? 1 : 0);
@@ -24,6 +24,7 @@ export abstract class ExportDoc implements ApiDoc {
   content = getContent(this.declaration);
   path: string;
   outputPath: string;
+  originalName: string;
 
   constructor(
       public moduleDoc: ModuleDoc,
@@ -31,6 +32,18 @@ export abstract class ExportDoc implements ApiDoc {
       public declaration: Declaration,
       public basePath: string,
       public typeChecker: TypeChecker,
-      public namespacesToInclude: string[]) {
-      }
+      public namespacesToInclude: string[],
+      public aliasSymbol?: Symbol) {
+
+    // In case there is a alias symbol, the name of the aliased symbol will
+    // be the main alias of this export doc.
+    if (aliasSymbol && aliasSymbol.name !== symbol.name) {
+      this.aliases.unshift(aliasSymbol.name);
+      this.aliases.push(`${moduleDoc.id}/${aliasSymbol.name}`);
+
+      // Store the original symbol name in a separate property of this doc, to allow developers
+      // to easily resolve the original export doc if present.
+      this.originalName = symbol.name;
+    }
+  }
 }

@@ -200,6 +200,49 @@ describe('readTypeScriptModules', () => {
     });
   });
 
+  describe('export aliases', () => {
+    
+    it('should properly name the aliased export', () => {
+      const docs: DocCollection = [];
+    
+      processor.sourceFiles = ['exportAliases.ts'];
+      processor.$process(docs);
+
+      const exportedClasses = docs.filter(doc => doc.docType === 'class');
+
+      expect(exportedClasses[0].name).toBe('DefaultExport');
+      expect(exportedClasses[1].name).toBe('AliasedExport');
+     });
+
+     it('should have the proper aliases resolved', () => {
+      const docs: DocCollection = [];
+    
+      processor.sourceFiles = ['exportAliases.ts'];
+      processor.$process(docs);
+
+      const exportedClasses = docs.filter(doc => doc.docType === 'class');
+
+      expect(exportedClasses[0].aliases[0]).toBe('DefaultExport');
+
+      expect(exportedClasses[1].aliases[0]).toBe('AliasedExport');
+      expect(exportedClasses[1].aliases[1]).toBe('DefaultExport');
+
+      expect(exportedClasses[1].originalName).toBe('DefaultExport');
+     });
+
+     it('should expose the alias symbol', () => {
+      const docs: DocCollection = [];
+    
+      processor.sourceFiles = ['exportAliases.ts'];
+      processor.$process(docs);
+
+      const exportedClasses = docs.filter(doc => doc.docType === 'class');
+
+      expect(exportedClasses[0].aliasSymbol).toBeUndefined();
+      expect(exportedClasses[1].aliasSymbol).toBeDefined();
+     });
+  });
+
   describe('type aliases', () => {
     it('should find the correct type when there are multiple declarations', () => {
       processor.sourceFiles = [ 'type-aliases.ts'];

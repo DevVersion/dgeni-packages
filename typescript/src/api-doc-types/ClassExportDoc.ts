@@ -13,17 +13,22 @@ export class ClassExportDoc extends ClassLikeExportDoc {
   docType = 'class';
   constructorDoc: MethodMemberDoc|undefined;
   statics: MemberDoc[] = [];
-  constructor(
-    moduleDoc: ModuleDoc,
-    symbol: Symbol,
-    basePath: string,
-    typeChecker: TypeChecker,
-    hidePrivateMembers: boolean,
-    namespacesToInclude: string[]) {
-    super(moduleDoc, symbol, symbol.valueDeclaration!, basePath, typeChecker, namespacesToInclude);
+
+  constructor(moduleDoc: ModuleDoc,
+              symbol: Symbol,
+              basePath: string,
+              typeChecker: TypeChecker,
+              hidePrivateMembers: boolean,
+              namespacesToInclude: string[],
+              aliasSymbol?: Symbol) {
+    
+    super(moduleDoc, symbol, symbol.valueDeclaration!, basePath, typeChecker, namespacesToInclude,
+        aliasSymbol);
+    
     if (symbol.exports) {
       this.statics = this.getMemberDocs(symbol.exports, hidePrivateMembers, true);
     }
+    
     if (symbol.members) {
       // Get the constructor
       const constructorSymbol = symbol.members.get('__constructor');

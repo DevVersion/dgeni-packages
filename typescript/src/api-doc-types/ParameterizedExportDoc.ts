@@ -15,7 +15,8 @@ export abstract class ParameterizedExportDoc extends ExportDoc {
       declaration: Declaration,
       basePath: string,
       typeChecker: TypeChecker,
-      namespacesToInclude: string[]) {
-    super(moduleDoc, symbol, declaration, basePath, typeChecker, namespacesToInclude);
+      namespacesToInclude: string[],
+      aliasSymbol?: Symbol) {
+    super(moduleDoc, symbol, declaration, basePath, typeChecker, namespacesToInclude, aliasSymbol);
   }
 }

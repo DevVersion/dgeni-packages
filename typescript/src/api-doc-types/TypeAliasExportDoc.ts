@@ -7,13 +7,14 @@ export class TypeAliasExportDoc extends ParameterizedExportDoc {
   docType = 'type-alias';
   typeDefinition = getDeclarationTypeText(this.declaration, this.namespacesToInclude);
 
-  constructor(
-    moduleDoc: ModuleDoc,
-    exportSymbol: Symbol,
-    basePath: string,
-    typeChecker: TypeChecker,
-    namespacesToInclude: string[]) {
-    super(moduleDoc, exportSymbol, getTypeAliasDeclaration(exportSymbol.getDeclarations()!), basePath, typeChecker, namespacesToInclude);
+  constructor(moduleDoc: ModuleDoc,
+              exportSymbol: Symbol,
+              basePath: string,
+              typeChecker: TypeChecker,
+              namespacesToInclude: string[],
+              aliasSymbol?: Symbol) {
+
+    super(moduleDoc, exportSymbol, getTypeAliasDeclaration(exportSymbol.getDeclarations()!), basePath, typeChecker, namespacesToInclude, aliasSymbol);
   }
 }
 

@@ -37,8 +37,9 @@ export abstract class ClassLikeExportDoc extends ContainerExportDoc {
       declaration: Declaration,
       basePath: string,
       typeChecker: TypeChecker,
-      namespacesToInclude: string[]) {
-        super(moduleDoc, symbol, declaration, basePath, typeChecker, namespacesToInclude);
+      namespacesToInclude: string[],
+      aliasSymbol?: Symbol) {
+        super(moduleDoc, symbol, declaration, basePath, typeChecker, namespacesToInclude, aliasSymbol);
         this.computeHeritageClauses();
         this.addAliases();
       }
